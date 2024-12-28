@@ -29,4 +29,4 @@ This project was made possible thanks to the amazing work by [da66en](https://gi
 
 ## License
 
-LightCBA is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
+LightCBA is licensed under the AGPL-3.0 License. See the [LICENSE](LICENSE) file for more information.
