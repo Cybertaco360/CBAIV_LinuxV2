@@ -122,7 +122,7 @@ function close() {
                 >
                     <div class="w-500 h-min">
                         <h1 style="margin-left: 40%">
-                            <b>Battery Test Setup for Dummies</b>
+                            <b>Battery Test Configuration Edit</b>
                         </h1>
                     </div>
                     <Stepper
