@@ -23,6 +23,10 @@ To install LightCBA, navigate to the [Releases](#) section on the sidebar and do
 
 The software is currently under development. Stay tuned for updates and new features along with patches!
 
+## Credits
+
+This project was made possible thanks to the amazing work by [da66en](https://github.com/da66en) on their library, [python_wmr_cba](https://github.com/da66en/python_wmr_cba). Their absolutely beautiful creation of this library allowed this whole project to be made possible. This couldn't have happened without you!
+
 ## License
 
 LightCBA is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
