@@ -14,7 +14,7 @@ Welcome to **LightCBA**, an open-source battery testing software designed to bri
 - **Real-time Data Logging and Analysis**: Monitor and analyze battery performance in real-time.
 - **Configurable Test Parameters**: Customize test parameters to suit your specific needs.
 - **Intuitive Graphical Display**: Visualize battery performance with easy-to-understand graphs.
-- **Automated Test Controls and Scheduling**: Automate tests and schedule them as per your convenience.
+- **Dynamic Test Controls and Scheduling**: Control tests and launch them as per your convenience.
 - **Lightweight Design**: Ensures smooth operation without taxing system resources.
 
 ## Installation
