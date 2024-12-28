@@ -3,8 +3,7 @@ use tauri::{Manager};
 use std::sync::Mutex;
 
 fn start_flask_backend() -> std::process::Child {
-    let path = "./bin/app"; // Adjust if the location differs
-    std::process::Command::new(path)
+    std::process::Command::new("./bin/app")
         .spawn()
         .unwrap_or_else(|err| panic!("Failed to start Flask backend at {path}: {err}"))
 }
