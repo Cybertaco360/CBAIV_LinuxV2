@@ -98,11 +98,14 @@ def test_collect():
 
 @app.route("/api/emergency" , methods=["GET"])
 def emergency():
+    global cba
+    global start_time
+    global current_values
     try:
         cba.do_stop()
-        return jsonify({"message": "EMERGENCY COMPLETED"})
+        return jsonify({"message": "EMERGENCY COMPLETED", "Peak Voltage": max(current_values), "End Time": time.time()-start_time}), 200
     except Exception as error:
-        return jsonify({"message": "EMERGENCY SHUTDOWN FAILED, PHYSICAL/DIVINE INTERVENTION NOW MANDATORY"})
+        return jsonify({"message": "EMERGENCY SHUTDOWN FAILED, PHYSICAL/DIVINE INTERVENTION NOW MANDATORY"}), 400
 
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=5000)

@@ -12,6 +12,7 @@ import {
     MenubarTrigger,
 } from '@/components/ui/menubar'
 import { ref } from 'vue'
+import { Github, Music, FileUser} from 'lucide-vue-next'
 const display_test_json = ref(true)
 const emits = defineEmits(['display-test-json', 'display-sanity-test'])
 function handleDisplayTestJson() {
@@ -99,9 +100,13 @@ const props = defineProps({
             <MenubarTrigger>Extra</MenubarTrigger>
             <MenubarContent>
                 <MenubarRadioGroup value="extras">
-                    <MenubarRadioItem value="music"> Music </MenubarRadioItem>
-                    <MenubarRadioItem value="benoit"> Repository </MenubarRadioItem>
-                    <MenubarRadioItem value="Luis"> Credits </MenubarRadioItem>
+                    <MenubarRadioItem value="music"> <Music></Music>Music </MenubarRadioItem>
+                    <a href="https://github.com/Cybertaco360/LightCBA" target="_blank">
+                    <MenubarRadioItem>
+                        <Github />Repository 
+                    </MenubarRadioItem>
+                    </a>
+                    <MenubarRadioItem value="Luis"> <FileUser />Credits </MenubarRadioItem>
                 </MenubarRadioGroup>
                 <MenubarSeparator />
                 <MenubarItem inset> Edit... </MenubarItem>
@@ -111,10 +116,8 @@ const props = defineProps({
         </MenubarMenu>
     </Menubar>
 </template>
-<!--
-
-<Button variant="icon">
-            <img src="../assets/CBAStudioIcon.png" alt="logo" class="h-10 w-10" />
-        </Button>
-
--->
+<style lang="css" scoped>
+a {
+  all: unset;
+}
+</style>

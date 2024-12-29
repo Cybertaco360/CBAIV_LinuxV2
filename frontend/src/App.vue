@@ -45,7 +45,7 @@
         <Graph
             :data="graphingdata"
             style="height: 500px; width: 1500px; margin-left: -350px"
-            :colors="['lime', 'red']"
+            :colors="colors"
         ></Graph>
         <div class="h-full" style="width: 350px">
             <Card class="h-full">
@@ -225,6 +225,9 @@
             </Card>
         </div>
     </div>
+    <div class="w-full fixed bottom-0 left-0">
+        <ColorPalette @colorOneUpdate="colorOneUpdate" @colorTwoUpdate="colorTwoUpdate"/>
+    </div>
     <TestCommand
         v-if="showCommand"
         style="position: fixed; align-self: center"
@@ -276,6 +279,7 @@ import regression from 'regression'
 import TestConfirmation from '@/components/TestConfirmation.vue'
 import { toast } from 'vue-sonner'
 import { Toaster } from '@/components/ui/sonner'
+import ColorPalette from './components/ColorPalette.vue'
 const mode = useColorMode()
 const showCommand = ref(false)
 const configuration = ref({ dataPrecision: 1000 })
@@ -283,6 +287,13 @@ const showConnect = ref(false)
 const display_test_json = ref(false)
 function updateHashmap({ key, value }) {
     configuration.value[key] = value
+}
+const colors = ref(['#0F0', '#F00'])
+function colorOneUpdate(color: string='') {
+    colors.value[0] = color
+}
+function colorTwoUpdate(color: string='') {
+    colors.value[1] = color
 }
 const allCommands = ref(null)
 const showSanity = ref(false)
@@ -305,38 +316,38 @@ const batteryTestResult = reactive({
 const graphingdata = reactive([
     {
         time: '1',
-        'Predicted Voltage': Math.random(),
-        Voltage: Math.random(),
+        'Predicted Voltage': (Math.random()+2)*100,
+        Voltage: (Math.random()+2)*100,
     },
     {
         time: '2',
-        'Predicted Voltage': Math.random(),
-        Voltage: Math.random(),
+        'Predicted Voltage': (Math.random()+2)*100,
+        Voltage: (Math.random()+2)*100,
     },
     {
         time: '3',
-        'Predicted Voltage': Math.random(),
-        Voltage: Math.random(),
+        'Predicted Voltage': (Math.random()+2)*100,
+        Voltage: (Math.random()+2)*100,
     },
     {
         time: '4',
-        'Predicted Voltage': Math.random(),
-        Voltage: Math.random(),
+        'Predicted Voltage': (Math.random()+2)*100,
+        Voltage: (Math.random()+2)*100,
     },
     {
         time: '5',
-        'Predicted Voltage': Math.random(),
-        Voltage: Math.random(),
+        'Predicted Voltage': (Math.random()+2)*100,
+        Voltage: (Math.random()+2)*100,
     },
     {
         time: '6',
-        'Predicted Voltage': Math.random(),
-        Voltage: Math.random(),
+        'Predicted Voltage': (Math.random()+2)*100,
+        Voltage: (Math.random()+2)*100,
     },
     {
         time: '7',
-        'Predicted Voltage': Math.random(),
-        Voltage: Math.random(),
+        'Predicted Voltage': (Math.random()+2)*100,
+        Voltage: (Math.random()+2)*100,
     },
 ])
 onMounted(() => {
