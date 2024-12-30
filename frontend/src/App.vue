@@ -57,14 +57,12 @@
                             Current Test Information
                         </CardTitle>
                         <CardDescription class="w-max">
-                          <span>
-                            Date: {{ batteryTestResult['Date'] }}
-                          </span>
+                            <span> Date: {{ batteryTestResult['Date'] }} </span>
                         </CardDescription>
                         <CardDescription>
-                          <span>
-                            Battery: {{ batteryTestResult['Battery'] }}
-                          </span>
+                            <span>
+                                Battery: {{ batteryTestResult['Battery'] }}
+                            </span>
                         </CardDescription>
                     </div>
                     <div class="ml-auto flex items-center gap-1">
@@ -138,11 +136,7 @@
                                 <span class="text-muted-foreground"
                                     >Current:</span
                                 >
-                                <span
-                                    >{{
-                                        batteryTestResult['Current']
-                                    }}A</span
-                                >
+                                <span>{{ batteryTestResult['Current'] }}A</span>
                             </li>
                             <li class="flex items-center justify-between">
                                 <span class="text-muted-foreground">Time</span>
@@ -195,8 +189,7 @@
                                     class="bg-red-700 text-white hover:bg-red-500"
                                     disabled
                                     ><ShieldAlert />No Test Running
-                                    </Button
-                                >
+                                </Button>
                             </li>
                             <li class="mt-5 text-center" v-else>
                                 <Button
@@ -226,7 +219,10 @@
         </div>
     </div>
     <div class="w-full fixed bottom-0 left-0">
-        <ColorPalette @colorOneUpdate="colorOneUpdate" @colorTwoUpdate="colorTwoUpdate"/>
+        <ColorPalette
+            @colorOneUpdate="colorOneUpdate"
+            @colorTwoUpdate="colorTwoUpdate"
+        />
     </div>
     <TestCommand
         v-if="showCommand"
@@ -253,7 +249,7 @@
         @launch-test="showCommand = true"
         @launch-connect="showConnect = true"
     ></AllCommands>
-    <Toaster richColors/>
+    <Toaster richColors />
 </template>
 <!-- PLEASE STOP TRYING TO USE OPTIONS API IN THE SETUP-->
 <script setup lang="ts">
@@ -289,10 +285,10 @@ function updateHashmap({ key, value }) {
     configuration.value[key] = value
 }
 const colors = ref(['#0F0', '#F00'])
-function colorOneUpdate(color: string='') {
+function colorOneUpdate(color: string = '') {
     colors.value[0] = color
 }
-function colorTwoUpdate(color: string='') {
+function colorTwoUpdate(color: string = '') {
     colors.value[1] = color
 }
 const allCommands = ref(null)
@@ -302,52 +298,52 @@ const testing = ref(false)
 let collectingInterval: NodeJS.Timeout | null = null
 let initialdropfound = false
 const batteryTestResult = reactive({
-    "Date": 'November 23, 2023',
-    "Battery": 'YM-25-01',
+    Date: 'November 23, 2023',
+    Battery: 'YM-25-01',
     'Initial Voltage': 1,
     'Peak Voltage': 2,
     'Initial Drop Voltage': 3,
     'Cutoff Voltage': 4,
-    'Time': 5,
-    'Current': 6,
+    Time: 5,
+    Current: 6,
     'Final Capacity(Ah)': 6,
     'Capacity% (Battery Quality)': 7,
 })
 const graphingdata = reactive([
     {
         time: '1',
-        'Predicted Voltage': (Math.random()+2)*100,
-        Voltage: (Math.random()+2)*100,
+        'Predicted Voltage': (Math.random() + 2) * 100,
+        Voltage: (Math.random() + 2) * 100,
     },
     {
         time: '2',
-        'Predicted Voltage': (Math.random()+2)*100,
-        Voltage: (Math.random()+2)*100,
+        'Predicted Voltage': (Math.random() + 2) * 100,
+        Voltage: (Math.random() + 2) * 100,
     },
     {
         time: '3',
-        'Predicted Voltage': (Math.random()+2)*100,
-        Voltage: (Math.random()+2)*100,
+        'Predicted Voltage': (Math.random() + 2) * 100,
+        Voltage: (Math.random() + 2) * 100,
     },
     {
         time: '4',
-        'Predicted Voltage': (Math.random()+2)*100,
-        Voltage: (Math.random()+2)*100,
+        'Predicted Voltage': (Math.random() + 2) * 100,
+        Voltage: (Math.random() + 2) * 100,
     },
     {
         time: '5',
-        'Predicted Voltage': (Math.random()+2)*100,
-        Voltage: (Math.random()+2)*100,
+        'Predicted Voltage': (Math.random() + 2) * 100,
+        Voltage: (Math.random() + 2) * 100,
     },
     {
         time: '6',
-        'Predicted Voltage': (Math.random()+2)*100,
-        Voltage: (Math.random()+2)*100,
+        'Predicted Voltage': (Math.random() + 2) * 100,
+        Voltage: (Math.random() + 2) * 100,
     },
     {
         time: '7',
-        'Predicted Voltage': (Math.random()+2)*100,
-        Voltage: (Math.random()+2)*100,
+        'Predicted Voltage': (Math.random() + 2) * 100,
+        Voltage: (Math.random() + 2) * 100,
     },
 ])
 onMounted(() => {
@@ -369,42 +365,43 @@ async function batteryFullTest() {
     })
     const result = await response.json()
     if (response.ok) {
-      this.testing = true
-      graphingdata.splice(0, graphingdata.length)
-      toast.success('Test Started', {
-        description: 'Test has started successfully.',
-      })
+        this.testing = true
+        graphingdata.splice(0, graphingdata.length)
+        toast.success('Test Started', {
+            description: 'Test has started successfully.',
+        })
     } else {
-        console.error('Failed to start test');
+        console.error('Failed to start test')
         toast.error('Test Failed', {
-        description: 'Check physical connections and try again.',
-        action: {
-          label: 'Try Again',
-          onClick: () => batteryFullTest(),
-        },
-      })
-      this.testing = false
+            description: 'Check physical connections and try again.',
+            action: {
+                label: 'Try Again',
+                onClick: () => batteryFullTest(),
+            },
+        })
+        this.testing = false
     }
-    Object.assign(batteryTestResult,{
-        "Date": '',
-        "Battery": result['Battery'],
+    Object.assign(batteryTestResult, {
+        Date: '',
+        Battery: result['Battery'],
         'Initial Voltage': result['Initial Voltage'],
         'Peak Voltage': 0,
         'Initial Drop Voltage': 0,
         'Cutoff Voltage': result['Cutoff Voltage'],
-        "Time": 0,
-        'Current': result['Current'],
+        Time: 0,
+        Current: result['Current'],
         'Final Capacity(Ah)': 0,
         'Capacity% (Battery Quality)': 0,
     })
     var setDate = new Date()
-    batteryTestResult['Date'] = `${String(setDate.getMonth() + 1).padStart(2, '0')}/` +
-                   `${String(setDate.getDate()).padStart(2, '0')}/` +
-                   `${setDate.getFullYear()} ` +
-                   `${String(setDate.getHours() % 12 || 12).padStart(2, '0')}:` +
-                   `${String(setDate.getMinutes()).padStart(2, '0')}:` +
-                   `${String(setDate.getSeconds()).padStart(2, '0')} ` +
-                   `${setDate.getHours() >= 12 ? 'PM' : 'AM'}`;
+    batteryTestResult['Date'] =
+        `${String(setDate.getMonth() + 1).padStart(2, '0')}/` +
+        `${String(setDate.getDate()).padStart(2, '0')}/` +
+        `${setDate.getFullYear()} ` +
+        `${String(setDate.getHours() % 12 || 12).padStart(2, '0')}:` +
+        `${String(setDate.getMinutes()).padStart(2, '0')}:` +
+        `${String(setDate.getSeconds()).padStart(2, '0')} ` +
+        `${setDate.getHours() >= 12 ? 'PM' : 'AM'}`
     console.log(this.currentTime)
 }
 watch(testing, (newTestingState) => {
@@ -416,26 +413,40 @@ watch(testing, (newTestingState) => {
 })
 function DataCollection() {
     const precision = configuration.value.dataPrecision
-    collectingInterval = setInterval(async() => {
-      try {
-            const response = await fetch('http://127.0.0.1:5000/api/data_collection')
+    collectingInterval = setInterval(async () => {
+        try {
+            const response = await fetch(
+                'http://127.0.0.1:5000/api/data_collection'
+            )
             if (response.ok) {
                 const data = await response.json()
                 console.log(data)
-                if (data['Status'] == 'Running'){
-                graphingdata.push({time: `${data['Time']*precision/1000}`, 'Predicted Voltage': data['Predicted Voltage'], Voltage: data['Voltage']})
-                if (initialdropfound == false && data['Drop Voltage Detected'] !== null) {
-                    initialdropfound = true
-                    Object.assign(batteryTestResult, {
-                        'Initial Drop Voltage': data['Drop Voltage Detected'],
+                if (data['Status'] == 'Running') {
+                    graphingdata.push({
+                        time: `${(data['Time'] * precision) / 1000}`,
+                        'Predicted Voltage': data['Predicted Voltage'],
+                        Voltage: data['Voltage'],
                     })
-                }
+                    if (
+                        initialdropfound == false &&
+                        data['Drop Voltage Detected'] !== null
+                    ) {
+                        initialdropfound = true
+                        Object.assign(batteryTestResult, {
+                            'Initial Drop Voltage':
+                                data['Drop Voltage Detected'],
+                        })
+                    }
                 } else {
                     Object.assign(batteryTestResult, {
                         'Peak Voltage': data['Peak Voltage'],
-                        'Time': data['End Time'],
-                        'Final Capacity(Ah)': data['End Time']/3600*batteryTestResult['Current'],
-                        'Capacity% (Battery Quality)': data['Final Capacity(Ah)']/batteryTestResult['Current'],
+                        Time: data['End Time'],
+                        'Final Capacity(Ah)':
+                            (data['End Time'] / 3600) *
+                            batteryTestResult['Current'],
+                        'Capacity% (Battery Quality)':
+                            data['Final Capacity(Ah)'] /
+                            batteryTestResult['Current'],
                     })
                     fullTestCompletion()
                 }
@@ -454,7 +465,7 @@ function DataCollection() {
     }, precision)
 }
 function stopDataCollection() {
-    if (collectingInterval){
+    if (collectingInterval) {
         clearInterval(collectingInterval)
         collectingInterval = null
     }
@@ -485,7 +496,6 @@ onMounted(() => {
 </script>
 <!-- OPTIONS API AND DATA IN HERE PLEASE-->
 <script lang="ts">
-
 export default {
     data() {
         return {
@@ -494,14 +504,15 @@ export default {
     },
     methods: {
         updateTime() {
-          const now = new Date();
-this.currentTime = `${String(now.getMonth() + 1).padStart(2, '0')}/` +
-                   `${String(now.getDate()).padStart(2, '0')}/` +
-                   `${now.getFullYear()} ` +
-                   `${String(now.getHours() % 12 || 12).padStart(2, '0')}:` +
-                   `${String(now.getMinutes()).padStart(2, '0')}:` +
-                   `${String(now.getSeconds()).padStart(2, '0')} ` +
-                   `${now.getHours() >= 12 ? 'PM' : 'AM'}`;
+            const now = new Date()
+            this.currentTime =
+                `${String(now.getMonth() + 1).padStart(2, '0')}/` +
+                `${String(now.getDate()).padStart(2, '0')}/` +
+                `${now.getFullYear()} ` +
+                `${String(now.getHours() % 12 || 12).padStart(2, '0')}:` +
+                `${String(now.getMinutes()).padStart(2, '0')}:` +
+                `${String(now.getSeconds()).padStart(2, '0')} ` +
+                `${now.getHours() >= 12 ? 'PM' : 'AM'}`
         },
     },
     mounted() {

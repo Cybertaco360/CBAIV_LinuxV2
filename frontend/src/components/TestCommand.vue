@@ -365,7 +365,10 @@ function close() {
                                             <div
                                                 class="flex items-center space-x-2"
                                             >
-                                                <Checkbox value="true" required />
+                                                <Checkbox
+                                                    value="true"
+                                                    required
+                                                />
                                                 <label
                                                     for="terms"
                                                     class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"

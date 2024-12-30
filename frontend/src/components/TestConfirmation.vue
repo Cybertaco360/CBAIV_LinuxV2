@@ -6,7 +6,11 @@
             class="border border-gray-200 shadow-2xl bg-black p-8 flex flex-col items-center gap-6 rounded-lg w-2/3"
         >
             <div class="flex w-full">
-                <Button class="ml-0" @click="handleCloseConfirmation" variant="outline">
+                <Button
+                    class="ml-0"
+                    @click="handleCloseConfirmation"
+                    variant="outline"
+                >
                     <LucideX class="h-6 w-6" />
                 </Button>
             </div>
@@ -15,7 +19,8 @@
                     <h2 class="text-xl font-semibold">Test Confirmation</h2>
                 </div>
                 <p class="text-gray-600 mt-2 mb-2">
-                    Are you sure you want to start the test? Current configuration below:
+                    Are you sure you want to start the test? Current
+                    configuration below:
                 </p>
                 <Table>
                     <TableHeader>
@@ -36,7 +41,9 @@
                     </TableBody>
                 </Table>
                 <div class="flex w-full justify-center">
-                <Button @click="handleStartTest" variant="outline"><p class="glow">Start Test</p></Button>
+                    <Button @click="handleStartTest" variant="outline"
+                        ><p class="glow">Start Test</p></Button
+                    >
                 </div>
             </CardContent>
         </Card>
@@ -68,12 +75,12 @@ const props = defineProps({
 </script>
 <style lang="css">
 .glow {
-                color: #ffffff;
-                text-shadow:
-                    0 0 10px #ffffff,
-                    0 0 20px #e9e9e9,
-                    0 0 30px #999999;
-                white-space: nowrap;
-                z-index: 1;
+    color: #ffffff;
+    text-shadow:
+        0 0 10px #ffffff,
+        0 0 20px #e9e9e9,
+        0 0 30px #999999;
+    white-space: nowrap;
+    z-index: 1;
 }
 </style>
