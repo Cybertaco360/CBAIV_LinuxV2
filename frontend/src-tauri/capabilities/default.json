@@ -9,20 +9,15 @@
     "core:default",
     "shell:default",
     {
-      "identifier": "shell:allow-execute",
+      "identifier": "fs:allow-document-write",
       "allow": [
-        {
-          "name": "exec-sh",
-          "cmd": "sh",
-          "args": [
-            "-c",
-            {
-              "validator": "\\S+"
-            }
-          ],
-          "sidecar": false
-        }
-      ]
+        { 
+          "path": "$DOCUMENT/**",
+          "url": "http://127.0.0.1:5000/**"
+      
+      }
+    
+    ]
     }
   ]
 }

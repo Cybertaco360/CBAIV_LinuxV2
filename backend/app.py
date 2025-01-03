@@ -1,7 +1,5 @@
 from flask import Flask, jsonify, send_from_directory, request
 from wmr_cba import wmr_cba 
-import os
-from platformdirs import user_data_dir
 import time
 from flask_cors import CORS
 INITIALDELAY = 0.78
@@ -61,6 +59,7 @@ def start_test():
     global time_count
     if cba is None:
         return jsonify({"error": "CBA device is not initialized"}), 500
+    
     cba.do_start(config["current"], config["cutoff"])
     if config == {}:
         return jsonify({"error": "No configuration provided"}), 400
@@ -72,6 +71,7 @@ def start_test():
                     "Cutoff Voltage": config["cutoff"],
                     "Current": config["current"]}
     # print(final_configuration)
+    print(cba.is_running())
     return jsonify(final_configuration), 200
 
 
@@ -83,7 +83,9 @@ def test_collect():
     global start_time
     if cba is None:
         return jsonify({"error": "CBA device is no longer initialized, physical intervention is recommended."}), 500
-    if cba.is_running() == False:
+    print(cba.is_running())
+    if cba.is_running() == False and len(current_values) > 0:
+        print("Done!")
         return jsonify({"Status": "Complete", "Peak Voltage": max(current_values), "End Time": time.time()-start_time}), 200
     a = cba.get_voltage()
     collection = {"Status": "Running","Time": time_count, "Voltage": a, 'Predicted Voltage': 0}

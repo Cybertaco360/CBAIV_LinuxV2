@@ -1,4 +1,4 @@
-<img src=".github/CBAStudioBanner.jpg" />
+<img src=".github/LightCBAMainBanner.jpg" />
 
 [![status](https://shields.io/badge/status-unstable-yellow.svg)](https://github.com/Cybertaco360/LightCBA)
 ![Tauri](https://img.shields.io/badge/tauri-%2324C8DB.svg?style=for-the-badge&logo=tauri&logoColor=%23FFFFFF)

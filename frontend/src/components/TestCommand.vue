@@ -37,16 +37,6 @@ import {
 } from 'lucide-vue-next'
 import { h, ref } from 'vue'
 import * as z from 'zod'
-defineProps({
-    toggle: {
-        type: Boolean,
-        required: true,
-    },
-    hashmap: {
-        type: Object,
-        required: true,
-    },
-})
 const emit = defineEmits(['update-hashmap', 'close-modal'])
 const formSchema = [
     z.object({
@@ -96,10 +86,11 @@ const steps = [
 ]
 
 function onSubmit(values: any) {
+    console.log(values); // Ensure values are correct
     Object.entries(values).forEach(([key, value]) => {
-        emit('update-hashmap', { key, value })
-    })
-    emit('close-modal')
+        emit('update-hashmap', { key, value });
+    });
+    emit('close-modal');
 }
 function close() {
     emit('close-modal')
@@ -116,9 +107,7 @@ function close() {
                     v-slot="{ meta, values, validate }"
                     as=""
                     keep-values
-                    :validation-schema="
-                        toTypedSchema(formSchema[stepIndex - 1])
-                    "
+                    :validation-schema="toTypedSchema(formSchema[Math.max(0, Math.min(stepIndex - 1, formSchema.length - 1))])"
                 >
                     <div class="w-500 h-min">
                         <h1 style="margin-left: 40%">
@@ -136,19 +125,16 @@ function close() {
                         class="block w-full"
                     >
                         <form
-                            @submit="
-                                (e) => {
-                                    e.preventDefault()
-                                    validate()
-
-                                    if (
-                                        stepIndex === steps.length &&
-                                        meta.valid
-                                    ) {
-                                        onSubmit(values)
-                                    }
-                                }
-                            "
+                        @submit="(e) => {
+    e.preventDefault();
+    validate().then(valid => {
+      if (valid) {
+        if (stepIndex === steps.length) {
+          onSubmit(values);
+        }
+      }
+    });
+  }"
                         >
                             <div class="flex w-full flex-start gap-2">
                                 <StepperItem

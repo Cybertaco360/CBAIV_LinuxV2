@@ -2,7 +2,7 @@
 import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { Zap, LucideX } from 'lucide-vue-next'
 import {
     Table,

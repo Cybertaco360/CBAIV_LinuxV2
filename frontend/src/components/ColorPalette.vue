@@ -13,9 +13,37 @@
                         </button>
                     </div>
                 </div>
-                <div class="flex ml-auto mr-auto">
-                    <div class="text-xl text-gray-500 ml-auto ml-32">
-                        Goldygo Yany's Legendary Super Palette
+                <div class="grid ml-auto mr-auto mt-0">
+                    <div
+                        class="text-2xl text-gray-500 ml-32 mr-auto bg-clip-text text-transparent bg-gradient-to-r from-fuchsia-400 to-sky-300 glow"
+                    >
+                        <b>Goldygo Yany's Legendary Hidden Panel</b>
+                    </div>
+                    <div>
+                        <Button
+                            variant="destructive"
+                            class="rounded-full h-14 w-32 text-red-300 ml-16"
+                        >
+                            <BugOff class="h-8 w-8" /> Bug Test
+                        </Button>
+                        <Button
+                            variant="outline"
+                            class="rounded-full h-14 w-32 text-sky-300 ml-4"
+                            disabled
+                        >
+                            <AudioLines class="h-8 w-8" /> Music Player
+                        </Button>
+                        <Button
+                            class="rounded-full h-14 w-32 text-green-500 ml-4"
+                        >
+                            <NotebookPen class="h-8 w-8" /> Testing Notes
+                        </Button>
+                        <Button
+                            class="bg-black rounded-full h-14 w-32 text-fuchsia-400 ml-4"
+                            disabled
+                        >
+                            <ChartSpline class="h-8 w-8" /> N/A Aggression Test
+                        </Button>
                     </div>
                 </div>
                 <div class="grid grid-cols-6 gap-4 items-center w-max ml-auto">
@@ -36,6 +64,8 @@
 <script setup lang="ts">
 import { Card, CardContent } from '@/components/ui/card'
 import { ref, defineEmits } from 'vue'
+import { Button } from '@/components/ui/button'
+import { BugOff, AudioLines, NotebookPen, ChartSpline } from 'lucide-vue-next'
 const emits = defineEmits(['colorOneUpdate', 'colorTwoUpdate'])
 
 const colors = ref([

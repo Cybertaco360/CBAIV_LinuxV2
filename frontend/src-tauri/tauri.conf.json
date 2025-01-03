@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "LightCBA",
-  "version": "0.1.0",
+  "version": "0.9.1",
   "identifier": "com.cybertaco360.lightcba",
   "build": {
     "frontendDist": "../dist",
@@ -17,13 +17,15 @@
         "width": 1280,
         "height": 720,
         "resizable": true,
-        "fullscreen": true
+        "fullscreen": true,
+        "devtools": true
       }
     ],
     "security": {
       "csp": null
     }
   },
+  
   "bundle": {
     "active": true,
     "targets": "all",

@@ -37,7 +37,7 @@ function handleOpenChange() {
     open.value = !open.value
 }
 
-const emits = defineEmits(['launch-test', 'launch-connect'])
+const emits = defineEmits(['launch-test', 'launch-connect', 'launch-credits'])
 
 function launchTest() {
     emits('launch-test')
@@ -45,6 +45,10 @@ function launchTest() {
 }
 function launchConnect() {
     emits('launch-connect')
+    handleOpenChange()
+}
+function launchCredits() {
+    emits('launch-credits')
     handleOpenChange()
 }
 defineExpose({ handleOpenChange })
@@ -65,22 +69,27 @@ defineExpose({ handleOpenChange })
                         <PlugZap />
                         Connect
                     </CommandItem>
-                    <CommandItem value="manual">
+                    <CommandItem value="manual" disabled>
                         <Book />
                         Manual
                     </CommandItem>
                 </CommandGroup>
                 <CommandSeparator />
                 <CommandGroup heading="Other">
-                    <CommandItem value="repository">
-                        <Github />
-                        Repository
-                    </CommandItem>
-                    <CommandItem value="music">
+                    <a
+                        href="https://github.com/Cybertaco360/LightCBA"
+                        target="_blank"
+                    >
+                        <CommandItem value="repository">
+                            <Github />
+                            Repository
+                        </CommandItem>
+                    </a>
+                    <CommandItem value="music" disabled>
                         <Music />
                         Music
                     </CommandItem>
-                    <CommandItem value="credits">
+                    <CommandItem value="credits" @click="launchCredits">
                         <FileUser />
                         Credits
                     </CommandItem>
@@ -89,3 +98,8 @@ defineExpose({ handleOpenChange })
         </CommandDialog>
     </div>
 </template>
+<style lang="css" scoped>
+a {
+    all: unset;
+}
+</style>

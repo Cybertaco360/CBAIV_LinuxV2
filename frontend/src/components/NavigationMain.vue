@@ -12,15 +12,27 @@ import {
     MenubarTrigger,
 } from '@/components/ui/menubar'
 import { ref } from 'vue'
-import { Github, Music, FileUser } from 'lucide-vue-next'
+import {
+    Github,
+    Music,
+    FileUser,
+    Braces,
+    Ghost,
+    RefreshCcwDot,
+    Maximize,
+    ChevronsLeftRightEllipsis,
+} from 'lucide-vue-next'
 const display_test_json = ref(true)
-const emits = defineEmits(['display-test-json', 'display-sanity-test'])
+const emits = defineEmits(['display-test-json', 'display-sanity-test', 'display-graphing-data', 'display-export'])
 function handleDisplayTestJson() {
     display_test_json.value = !display_test_json.value
     emits('display-test-json')
 }
 function handleDisplaySanityTest() {
     emits('display-sanity-test')
+}
+function handleDisplayExport() {
+    emits('display-export')
 }
 const props = defineProps({
     intest: Boolean,
@@ -45,28 +57,13 @@ const props = defineProps({
                 <MenubarItem v-else disabled>
                     Import <MenubarShortcut>Ctrl+I</MenubarShortcut>
                 </MenubarItem>
-                <MenubarItem>
+                <MenubarItem @click="handleDisplayExport">
                     Export <MenubarShortcut>Ctrl+O</MenubarShortcut>
                 </MenubarItem>
                 <MenubarSeparator />
-                <MenubarItem>
+                <MenubarItem disabled>
                     Help <MenubarShortcut>Ctrl-H</MenubarShortcut>
                 </MenubarItem>
-            </MenubarContent>
-        </MenubarMenu>
-        <MenubarMenu>
-            <MenubarTrigger>Edit</MenubarTrigger>
-            <MenubarContent>
-                <MenubarItem>
-                    Undo <MenubarShortcut>⌘Z</MenubarShortcut>
-                </MenubarItem>
-                <MenubarItem>
-                    Redo <MenubarShortcut>⇧⌘Z</MenubarShortcut>
-                </MenubarItem>
-                <MenubarSeparator />
-                <MenubarItem>Cut</MenubarItem>
-                <MenubarItem>Copy</MenubarItem>
-                <MenubarItem>Paste</MenubarItem>
             </MenubarContent>
         </MenubarMenu>
         <MenubarMenu>
@@ -75,32 +72,38 @@ const props = defineProps({
                 <MenubarCheckboxItem
                     v-if="display_test_json"
                     @click="handleDisplayTestJson"
-                    >Display Test JSON</MenubarCheckboxItem
+                    ><Braces /> Display Test JSON</MenubarCheckboxItem
                 >
                 <MenubarCheckboxItem
                     v-else
                     checked
                     @click="handleDisplayTestJson"
-                    >Display Test JSON</MenubarCheckboxItem
+                    ><Braces /> Hide Test JSON</MenubarCheckboxItem
                 >
                 <MenubarSeparator />
                 <MenubarItem inset @click="handleDisplaySanityTest">
-                    Sanity Test
+                    <Ghost /> Sanity Test
                 </MenubarItem>
                 <MenubarItem disabled inset>
-                    Force Reload <MenubarShortcut>⇧⌘R</MenubarShortcut>
+                    <RefreshCcwDot /> Force Reload
+                    <MenubarShortcut>⇧⌘R</MenubarShortcut>
                 </MenubarItem>
                 <MenubarSeparator />
-                <MenubarItem inset> Toggle Fullscreen </MenubarItem>
+                <MenubarItem inset>
+                    <Maximize></Maximize> Toggle Fullscreen
+                </MenubarItem>
                 <MenubarSeparator />
-                <MenubarItem inset> Hide Sidebar </MenubarItem>
+                <MenubarItem inset @click="emits('display-graphing-data')">
+                    <ChevronsLeftRightEllipsis></ChevronsLeftRightEllipsis>
+                    Display GraphingData
+                </MenubarItem>
             </MenubarContent>
         </MenubarMenu>
         <MenubarMenu>
             <MenubarTrigger>Extra</MenubarTrigger>
             <MenubarContent>
                 <MenubarRadioGroup value="extras">
-                    <MenubarRadioItem value="music">
+                    <MenubarRadioItem value="music" disabled>
                         <Music></Music>Music
                     </MenubarRadioItem>
                     <a

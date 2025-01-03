@@ -4,6 +4,8 @@
         @display-test-json="display_test_json = !display_test_json"
         @display-sanity-test="showSanity = true"
         :intest="testing"
+        @display-graphing-data="showGraphingData = true"
+        @display-export="showExportMenu = true"
     ></NavigationMain>
     <div
         v-if="display_test_json"
@@ -46,7 +48,7 @@
             :data="graphingdata"
             style="height: 500px; width: 1500px; margin-left: -350px"
             :colors="colors"
-        ></Graph>
+        />
         <div class="h-full" style="width: 350px">
             <Card class="h-full">
                 <CardHeader class="flex flex-row items-start bg-muted/50">
@@ -78,7 +80,10 @@
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                                <DropdownMenuItem>Export</DropdownMenuItem>
+                                <DropdownMenuItem
+                                    @click="showExportMenu = !showExportMenu"
+                                    >Export</DropdownMenuItem
+                                >
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
@@ -108,7 +113,6 @@
                                 >
                             </li>
                         </ul>
-                        <Separator class="my-2" />
                         <ul class="grid gap-3">
                             <li class="flex items-center justify-between">
                                 <span class="text-muted-foreground"
@@ -132,6 +136,7 @@
                                     }}V</span
                                 >
                             </li>
+                            <Separator class="my-1" />
                             <li class="flex items-center justify-between">
                                 <span class="text-muted-foreground"
                                     >Current:</span
@@ -220,6 +225,7 @@
     </div>
     <div class="w-full fixed bottom-0 left-0">
         <ColorPalette
+            v-if="showHiddenPanel"
             @colorOneUpdate="colorOneUpdate"
             @colorTwoUpdate="colorTwoUpdate"
         />
@@ -229,7 +235,7 @@
         style="position: fixed; align-self: center"
         :toggle="showCommand"
         :hashmap="configuration"
-        @close-modal="showCommand = false"
+        @close-modal="showCommand = false;"
         @update-hashmap="updateHashmap"
     />
     <Connecting v-if="showConnect" @close-connect="showConnect = false" />
@@ -248,13 +254,32 @@
         ref="allCommands"
         @launch-test="showCommand = true"
         @launch-connect="showConnect = true"
+        @launch-credits="credits = true"
     ></AllCommands>
     <Toaster richColors />
+    <ExportCard
+        v-if="showExportMenu"
+        class="fixed w-full"
+        :filetype = "filetype"
+        @export-data="exportData(filetype)"
+        @close-export="showExportMenu = false"
+        @update-filetype="(type: string) => filetype = type"
+    />
+    <GraphingData
+        v-if="showGraphingData"
+        @close="showGraphingData = false"
+        :data="graphingdata"
+    />
+    <Credits
+    v-if="credits"
+    @close-credits="credits = false"
+    />
 </template>
 <!-- PLEASE STOP TRYING TO USE OPTIONS API IN THE SETUP-->
 <script setup lang="ts">
 import TestCommand from '@/components/TestCommand.vue'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -264,6 +289,7 @@ import {
 import { Icon } from '@iconify/vue'
 import { useColorMode } from '@vueuse/core'
 import Graph from '@/components/Graph.vue'
+import ExportCard from '@/components/ExportCard.vue'
 import { ref, onMounted, watch, reactive } from 'vue'
 import AllCommands from '@/components/AllCommands.vue'
 import { EllipsisVertical, Zap, ShieldAlert } from 'lucide-vue-next'
@@ -271,32 +297,44 @@ import CardDescription from '@/components/ui/card/CardDescription.vue'
 import Connecting from '@/components/Connecting.vue'
 import NavigationMain from '@/components/NavigationMain.vue'
 import SanityTest from '@/components/SanityTest.vue'
-import regression from 'regression'
 import TestConfirmation from '@/components/TestConfirmation.vue'
 import { toast } from 'vue-sonner'
 import { Toaster } from '@/components/ui/sonner'
 import ColorPalette from './components/ColorPalette.vue'
+import {
+    mkdir,
+    writeTextFile,
+    BaseDirectory,
+    create,
+} from '@tauri-apps/plugin-fs'
+import GraphingData from './components/GraphingData.vue'
+import Credits from './components/Credits.vue'
 const mode = useColorMode()
 const showCommand = ref(false)
-const configuration = ref({ dataPrecision: 1000 })
+const configuration = reactive({ dataPrecision: 1000 })
 const showConnect = ref(false)
 const display_test_json = ref(false)
 function updateHashmap({ key, value }) {
-    configuration.value[key] = value
+    configuration[key] = value
 }
-const colors = ref(['#0F0', '#F00'])
-function colorOneUpdate(color: string = '') {
-    colors.value[0] = color
+const colors = reactive(['#0F0', '#F00'])
+function colorOneUpdate(color) {
+    colors[0] = color
 }
-function colorTwoUpdate(color: string = '') {
-    colors.value[1] = color
+function colorTwoUpdate(color) {
+    colors[1] = color
 }
 const allCommands = ref(null)
 const showSanity = ref(false)
 const confirmation = ref(false)
 const testing = ref(false)
-let collectingInterval: NodeJS.Timeout | null = null
+const showHiddenPanel = ref(false)
+const showExportMenu = ref(false)
+let collectingInterval;
 let initialdropfound = false
+const filetype = ref('json')
+const showGraphingData = ref(false)
+const credits = ref(false)
 const batteryTestResult = reactive({
     Date: 'November 23, 2023',
     Battery: 'YM-25-01',
@@ -344,43 +382,64 @@ const graphingdata = reactive([
         time: '7',
         'Predicted Voltage': (Math.random() + 2) * 100,
         Voltage: (Math.random() + 2) * 100,
-    },
+    }
 ])
-onMounted(() => {
-    window.addEventListener('keydown', (e) => {
-        if (e.ctrlKey && e.key === 'p') {
-            e.preventDefault()
-            showCommand.value = !showCommand.value
-        }
-    })
-})
 async function batteryFullTest() {
-    console.log('Starting test with configuration:', configuration.value)
+    console.log('Starting test with configuration:', configuration);
+
+    // Fetch data to start the test
     const response = await fetch('http://127.0.0.1:5000/api/start_test', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(configuration.value),
-    })
-    const result = await response.json()
+        body: JSON.stringify(configuration),
+    });
+    const result = await response.json();
+
     if (response.ok) {
-        this.testing = true
-        graphingdata.splice(0, graphingdata.length)
+        // Test started successfully
+        testing.value = true;
+
+        // Reset graphing data
+        graphingdata.splice(0, graphingdata.length);
+
+        // Show success toast
         toast.success('Test Started', {
             description: 'Test has started successfully.',
-        })
+        });
     } else {
-        console.error('Failed to start test')
+        // Test failed to start
+        console.error('Failed to start test');
         toast.error('Test Failed', {
             description: 'Check physical connections and try again.',
             action: {
                 label: 'Try Again',
                 onClick: () => batteryFullTest(),
             },
-        })
-        this.testing = false
+        });
+
+        // Stop the test on the hardware side if the start fails
+        try {
+            const emergencyResponse = await fetch('http://127.0.0.1/api/emergency', {
+                method: 'POST', 
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!emergencyResponse.ok) {
+                throw new Error('Failed to trigger emergency stop on the hardware side');
+            }
+        } catch (error) {
+            console.error('Error stopping test on hardware:', error);
+        }
+
+        // Set testing state to false since test did not start
+        testing.value = false;
     }
+
+    // Prepare and set battery test results
     Object.assign(batteryTestResult, {
         Date: '',
         Battery: result['Battery'],
@@ -392,18 +451,13 @@ async function batteryFullTest() {
         Current: result['Current'],
         'Final Capacity(Ah)': 0,
         'Capacity% (Battery Quality)': 0,
-    })
-    var setDate = new Date()
-    batteryTestResult['Date'] =
-        `${String(setDate.getMonth() + 1).padStart(2, '0')}/` +
-        `${String(setDate.getDate()).padStart(2, '0')}/` +
-        `${setDate.getFullYear()} ` +
-        `${String(setDate.getHours() % 12 || 12).padStart(2, '0')}:` +
-        `${String(setDate.getMinutes()).padStart(2, '0')}:` +
-        `${String(setDate.getSeconds()).padStart(2, '0')} ` +
-        `${setDate.getHours() >= 12 ? 'PM' : 'AM'}`
-    console.log(this.currentTime)
+    });
+
+    // Set current date in the result
+    var setDate = new Date();
+    batteryTestResult['Date'] = `${String(setDate.getDate()).padStart(2, '0')}-${String(setDate.getMonth() + 1).padStart(2, '0')}-${String(setDate.getFullYear()).slice(2)}`;
 }
+
 watch(testing, (newTestingState) => {
     if (newTestingState) {
         DataCollection()
@@ -411,8 +465,57 @@ watch(testing, (newTestingState) => {
         stopDataCollection()
     }
 })
+const convertToCSV = () => {
+    let data = graphingdata
+    if (!data || !data.length) {
+        return ''
+    }
+    const headers = Object.keys(data[0]).join(',')
+    const rows = data.map((row) =>
+        Object.values(row)
+            .map((value) => `"${value}"`) // Wrap each value in quotes
+            .join(',')
+    )
+    return [headers, ...rows].join('\n')
+}
+async function exportData(ftype) {
+    try {
+        let extension = ftype;
+        console.log(extension)
+        await mkdir('LightCBA', {
+            baseDir: BaseDirectory.Document,
+            recursive: true,
+        })
+        let contents = ''
+        if (extension === 'csv') {
+            contents = convertToCSV()
+        } else if (extension === 'json') {
+            contents = JSON.stringify(graphingdata, null, 2)
+        } else if (extension === 'xml') {
+            contents = `<?xml version="1.0" encoding="UTF-8"?>`
+        } else {
+            throw new Error('Invalid filetype')
+        }
+        const filename = `${batteryTestResult['Battery']}-${batteryTestResult['Date']}.${extension}`
+        await create(`LightCBA/${filename}`, {
+            baseDir: BaseDirectory.Document,
+        })
+
+        await writeTextFile(`LightCBA/${filename}`, contents, {
+            baseDir: BaseDirectory.Document,
+        })
+        toast.success('Export Successful', {
+            description: `Data exported to Documents/LightCBA/${filename}`,
+        })
+    } catch (error) {
+        console.error('Export failed:', error)
+        toast.error('Export Failed', {
+            description: error.message,
+        })
+    }
+}
 function DataCollection() {
-    const precision = configuration.value.dataPrecision
+    const precision = configuration.dataPrecision
     collectingInterval = setInterval(async () => {
         try {
             const response = await fetch(
@@ -478,18 +581,37 @@ function fullTestCompletion() {
         description: 'Test has completed successfully.',
     })
 }
-const emergencyResult = ref(null)
 async function emergencyStop() {
-    console.log('Emergency stop')
-    this.testing = false
-    stopDataCollection()
-    toast.error('Test Stopped', {
-        description: 'Test has been stopped.',
-    })
-    const response = await fetch('http://127.0.0.1:5000/api/emergency')
-    this.emergencyResult = await response.json()['message']
-    toast.success(emergencyResult.value)
+  try {
+    const response = await fetch('http://127.0.0.1/api/emergency', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to stop test on the hardware side');
+    }
+
+    console.log('Test stopped successfully on the hardware side');
+  } catch (error) {
+    console.error('Error stopping test:', error);
+  }
+
+  // Additional logic for stopping the test on the application side, if needed
 }
+onMounted(() => {
+    window.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.key === 'p') {
+            e.preventDefault()
+            showCommand.value = !showCommand.value
+        } else if (e.ctrlKey && e.key === 'ArrowUp') {
+            e.preventDefault()
+            showHiddenPanel.value = !showHiddenPanel.value
+        }
+    })
+})
 onMounted(() => {
     stopDataCollection()
 })

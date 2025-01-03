@@ -40,30 +40,64 @@
             }
 
             .logo-container .glowing-text {
+                margin-left: -150px;
                 position: absolute;
                 font-size: 3rem; /* Large text */
                 font-weight: bold;
                 color: #ffffff; /* Initial color */
-                text-shadow:
-                    0 0 10px #ffffff,
-                    0 0 20px #e9e9e9,
-                    0 0 30px #999999; /* Glow effect */
                 white-space: nowrap; /* Prevent text wrapping */
                 z-index: 1; /* Lower than the image */
                 transform: translateX(
                     -100%
                 ); /* Start position: completely behind the image */
-                animation: slideOutFromBehind 3s forwards ease-in-out; /* Slide in animation */
+                animation: slideOutFromBehind 1s forwards ease-out; /* Slide in animation */
+            }
+            .logo-container .glowing-text-yellow {
+                margin-left: 250px;
+                color: #f0db4f; /* Yellow color */
+                transform: translateX(
+                    -100%
+                );
+                animation: slideOutFromBehind2 2s forwards ease-out; /* Slide in animation */
             }
 
             @keyframes slideOutFromBehind {
                 0% {
                     transform: translateX(-100%);
+                    text-shadow:
+                        0 0 50px #000000,
+                        0 0 60px #000000,
+                        0 0 70px #999999;
+                    
                 }
                 100% {
-                    transform: translateX(
-                        100%
-                    ); /* Move text to the right and stop next to the image */
+                    transform: translateX(100%);
+                    text-shadow:
+                        0 0 50px #ffffff,
+                        0 0 60px #ffffff,
+                        0 0 70px #ffffff;
+                    
+                }
+            }
+            @keyframes slideOutFromBehind2 {
+                0% {
+                    transform: translateX(-100%);
+                    text-shadow:
+                        0 0 50px #000000,
+                        0 0 60px #000000,
+                        0 0 70px #ffffff;
+                    opacity: 0;
+                }
+                90% {
+                    opacity: 0.2;
+                }
+                100% {
+                    transform: translateX(150%);
+                    text-shadow:
+                        0 0 50px #ffd900,
+                        0 0 60px #ffd200,
+                        0 0 70px #ffff00;
+                    opacity: 1;
                 }
             }
         </style>
@@ -72,7 +106,7 @@
         <div id="splash-screen">
             <div class="logo-container">
                 <img src="src/assets/CBAStudioIcon.png" alt="CBA Studio" />
-                <span class="glowing-text">LightCBA</span>
+                <span class="glowing-text">LightCBA     </span><span class="glowing-text-yellow">Sparks v0.9.1</span>
             </div>
         </div>
         <!-- Splash screen -->
